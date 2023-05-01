@@ -1,4 +1,4 @@
-# harvesting-singleton-jobs-service
+# `harvesting-singleton-jobs-service`
 
 This service reacts to messages from the `delta-notifier` about tasks in the
 harvester stack. This service should be configured in the `jobs-controller` to
