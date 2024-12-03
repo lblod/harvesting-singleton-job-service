@@ -21,7 +21,7 @@ app.use(
     },
     limit: '50mb',
     extended: true,
-  })
+  }),
 );
 
 app.get('/', function (req, res) {
@@ -43,10 +43,10 @@ app.post('/delta', async function (req, res) {
       .filter((inserts) => inserts.length > 0)
       .flat()
       .filter(
-        (insert) => insert.predicate.value === env.OPERATION_PREDICATE.value
+        (insert) => insert.predicate.value === env.OPERATION_PREDICATE.value,
       )
       .filter(
-        (insert) => insert.object.value === env.SINGLETON_JOBS_OPERATION.value
+        (insert) => insert.object.value === env.SINGLETON_JOBS_OPERATION.value,
       )
       .map((insert) => insert.subject);
 
@@ -55,9 +55,10 @@ app.post('/delta', async function (req, res) {
       try {
         await tsk.updateTaskStatus(task, env.TASK_ONGOING_STATUS);
         const subjectBusy = await ts.isTaskBusyForSameSubject(task);
-        if (subjectBusy)
+        if (subjectBusy) {
+          console.log('subject is busy');
           await tsk.updateTaskStatus(task, env.TASK_FAILURE_STATUS);
-        else await tsk.updateTaskStatus(task, env.TASK_SUCCESS_STATUS);
+        } else await tsk.updateTaskStatus(task, env.TASK_SUCCESS_STATUS);
       } catch (err) {
         logError(err.message, err);
         const savedErr = await saveTaskError(err.message, err);
@@ -136,7 +137,7 @@ function errorToStore(errorObject, extraDetail) {
   store.addQuad(
     error,
     ns.dct`creator`,
-    literal('harvesting-singleton-job-service')
+    literal('harvesting-singleton-job-service'),
   );
   store.addQuad(error, ns.oslc`message`, literal(errorObject.message));
   store.addQuad(error, ns.dct`created`, now);
